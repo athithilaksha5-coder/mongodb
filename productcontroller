@@ -1,0 +1,72 @@
+const ProductModel = require('../models/productschema');
+var readline = require('readline-sync');
+
+//dashboard
+exports.dashboard = (req,res) =>{
+    console.log('*********LAKSHMISTORE************'+'\n'+'1.insert product')
+    console.log("Enter your choice: ")
+    var choice = readline.question();
+    if (choice == '1'){
+        res.send("If you are want to insert product, please change the router(http://localhost:8085/LAKSHMISTORE/save)");
+    }
+    else{
+        res.send("Please select correct choice")
+    }
+
+}
+
+// Create and Save a new Note
+exports.create = (req, res) => {
+    var newProduct = new ProductModel();
+    newProduct.ProductId = req.body.ProductId;
+    newProduct.ProductName = req.body.ProductName;
+    newProduct.Quantity = req.body.Quantity;
+    newProduct.Price = req.body.Price;
+
+    newProduct.save(function (err, data) {
+            if (err) {
+                console.log(error);
+                res.status(500).send({message: err.message || "Some error occurred while inserting the product."});
+            }
+            else {
+                res.send("Data inserted");
+            }
+        });
+    };
+// // Retrieve and return all products from the database.
+exports.findAll = (req, res) => {
+    ProductModel.find(function(err, data) {
+                    if(err){
+                        console.log(err);
+                    }
+                    else{
+                        res.send(data);
+                    }
+                });  
+            };
+
+exports.deleteProduct = (req,res) =>{
+   ProductModel.remove({ProductId:req.body.ProductId}, 
+                function(err, data) {
+                    if(err){
+                        console.log(err);
+                    }
+                    else{
+                        res.send(data);
+                    }
+                });  
+    };
+
+exports.updateProduct = (req,res) =>{
+    ProductModel.findByIdAndUpdate(req.body.ProductId, 
+                {ProductName:req.body.ProductName}, function(err, data) {
+                    if(err){
+                        console.log(err);
+                    }
+                    else{
+                        res.send(data);
+                        res.end();
+                        console.log("Data updated!");
+                    }
+                });  
+};
